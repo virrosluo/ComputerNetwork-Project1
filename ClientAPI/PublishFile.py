@@ -32,4 +32,5 @@ def publish(fpath:str, repoPath:str, serverIP, serverPort, clientInfo) -> bool:
         }, ensure_ascii=True)
 
         serverSocket.send(f"publish\n{json_str}".encode())
+        print(f"Publish file {fname} and create a copy in repository.")
         return True

@@ -91,11 +91,17 @@ class Server:
                 self.ui.display_publish_file(self.available_file, self.clientDict)
 
             elif command[0] == 'discover':
+                if (self.clientDict == {}):
+                    print("There is no client to discover")
+                    continue
                 discoverClient = self.get_client()
                 file_list = discover(discoverClient)
                 self.UpdateAvailableFile(file_list, discoverClient)
 
             elif command[0] == 'ping':
+                if (self.clientDict == {}):
+                    print("There is no client to ping")
+                    continue
                 discoverClient = self.get_client()
                 result = ping(discoverClient)
                 if result == False: self.UpdateClientStatus(discoverClient)
@@ -163,6 +169,7 @@ class Server:
 
 
 if __name__ == '__main__':
+    print("Server started")
     serverUI = ServerUI()
     server = Server('192.168.1.29', 8000, 10, serverUI)
 

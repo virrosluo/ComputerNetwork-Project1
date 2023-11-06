@@ -106,7 +106,7 @@ class Client:
         except Exception as e:
             raise Exception("Failed to init connection to server")
         
-    def __del__(self):
+    def shut_down(self):
         data = {
             'clientName': self.clientName,
             'serverHandlerPort': self.serverHandlerPort,
@@ -127,17 +127,22 @@ class Client:
 
 
 if __name__ == '__main__':
-    ports_input = input("Input port: ").split(' ')
-    if len(ports_input) != 2:
-        print("Please provide two port numbers.")
-    else:
-        serverHandlerPort, clientHandlerPort = [int(port) for port in ports_input]
+    clientName = input("Client started. Please choose a name to display on the system: ")
+
+    ports_input = []
+    while(len(ports_input) != 2 or ports_input == ""):
+        ports_input = input("Input port: ").split(' ')
+        if len(ports_input) != 2 or ports_input == "":
+            print("Please provide two port numbers.")
+        else:
+            serverHandlerPort, clientHandlerPort = [int(port) for port in ports_input]
 
     clientUI = ClientUI()
-    client = Client(serverInfo=('192.168.1.29', 8000),
-                    clientName='VirrosLuo', 
-                    serverHandlerInfo=('192.168.1.29', serverHandlerPort), 
-                    clientHandlerInfo=('192.168.1.29', clientHandlerPort),
+    serverIP = '192.168.1.29'
+    client = Client(serverInfo=(serverIP, 8000),
+                    clientName=clientName, 
+                    serverHandlerInfo=(serverIP, serverHandlerPort), 
+                    clientHandlerInfo=(serverIP, clientHandlerPort),
                     SupplyingFile_number=10,
                     clientUI=clientUI)
     
@@ -150,3 +155,4 @@ if __name__ == '__main__':
     clientHandlerThread.start()
 
     client.handle_UI()
+    client.shut_down()
