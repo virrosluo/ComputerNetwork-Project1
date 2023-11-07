@@ -22,7 +22,7 @@ def fetch(serverIP, serverPort, repoPath):
           if len(msg) == 0:
                print("Connection closed by the server.")
                break
-          print(f"Received message from {serverIP}: {msg}")
+          print(f"Received message from server: {msg}")
 
           # Check the type of message from client. 
           msg = msg.split(None, 1)
@@ -37,7 +37,7 @@ def fetch(serverIP, serverPort, repoPath):
 
 def fetch_from_client(chosen_file, repoPath, data):
      target_address = json.loads(data)
-     print(target_address)
+     # print(target_address)
      fetch_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
      fetch_socket.connect((target_address['address'], target_address['port']))
 
@@ -46,10 +46,10 @@ def fetch_from_client(chosen_file, repoPath, data):
      with open(f'{os.path.join(repoPath, chosen_file)}', 'wb') as file:
           data = fetch_socket.recv(4096)  # Adjust buffer size as per your requirements
           file.write(data)
+     print(f"Fetch {chosen_file} successfully")
 
      fetch_socket.close()
 
 def discover(server_socket, published_file):
      msg = json.dumps(published_file)
      server_socket.sendall(msg.encode('utf-8'))
-     print(f"Send published filenames to server")

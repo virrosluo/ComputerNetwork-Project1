@@ -19,11 +19,11 @@ def handle_fetch(client_socket, available_file_list, clientDict, index_list):
      list_of_file = available_file_list.keys()
      msg = "list " + ' '.join(map(str, list_of_file))
      client_socket.sendall(msg.encode('utf-8'))
-     print(f"Send list of available files to {client_address}")
+     # print(f"Send list of available files to {client_address}")
 
      # Receive the chosen file and send the suitable client
      filename = client_socket.recv(1024).decode('utf-8')
-     print(filename)
+     # print(filename)
      if len(filename) == 0:
           print("Connection closed by the client.")
           return
@@ -33,7 +33,7 @@ def handle_fetch(client_socket, available_file_list, clientDict, index_list):
 
      msg = "client " + json_str
      client_socket.sendall(msg.encode('utf-8'))
-     print(f"Send information of client {chosen_client} for {filename} to {client_address}")
+     # print(f"Send information of client {chosen_client} for {filename} to {client_address}")
 
 def check_file():
   print("check if the requested file exist")

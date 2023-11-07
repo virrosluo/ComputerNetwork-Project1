@@ -55,6 +55,7 @@ class Server:
                 if fname not in self.available_file.keys(): self.push_fnameToDict(fname, key)
                 else:
                     if key not in self.available_file[fname]: self.available_file[fname].append(key)
+            clientConnection.close()
 
     def UpdateAvailableFile(self, file_list, clientInfo):
         r'''
@@ -90,18 +91,25 @@ class Server:
                 self.ui.display_publish_file(self.available_file, self.clientDict)
 
             elif command[0] == 'discover':
+                if (self.clientDict == {}):
+                    print("There is no client to discover")
+                    continue
                 discoverClient = self.get_client()
                 file_list = discover(discoverClient)
                 self.UpdateAvailableFile(file_list, discoverClient)
 
             elif command[0] == 'ping':
+                if (self.clientDict == {}):
+                    print("There is no client to ping")
+                    continue
                 discoverClient = self.get_client()
                 result = ping(discoverClient)
                 if result == False: self.UpdateClientStatus(discoverClient)
                 self.ui.display_ping_info(result)
 
             elif command[0] == 'exit':
-                self.Stop_Thread = True
+                print('Server shut down')
+                return
 
             else: print("Undefined command")
 
@@ -161,10 +169,12 @@ class Server:
 
 
 if __name__ == '__main__':
+    print("Server started")
     serverUI = ServerUI()
-    server = Server('192.168.1.153', 8000, 10, serverUI)
+    server = Server('192.168.1.29', 8000, 10, serverUI)
 
     clientHandlerThread = threading.Thread(target=server.client_handler)
+    clientHandlerThread.daemon = True
     clientHandlerThread.start()
 
     server.UI_handler()

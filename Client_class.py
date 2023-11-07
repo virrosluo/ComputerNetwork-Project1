@@ -29,7 +29,7 @@ class Client:
         self.published_file = []
         if os.path.exists(self.repoPath):
             for fname in os.listdir(self.repoPath):
-                print(fname)
+                # print(fname)
                 self.published_file.append(fname)
 
         self.init_connection()
@@ -44,9 +44,9 @@ class Client:
             clientSocket, _ = connectionSocket.accept()
             task = threading.Thread(target=handle_fetch_request,
                                     args=(clientSocket, self.repoPath))
-            task.start()
+            task.start()    
             
-    def handle_server(self):
+    def handle_server(self): 
         connectionSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         connectionSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         connectionSocket.bind((self.serverHandlerIP, self.serverHandlerPort))
@@ -70,8 +70,17 @@ class Client:
 
             if command[0] == 'fetch':
                 fetch(self.serverIP, self.serverPort, self.repoPath)
+
             elif command[0] == 'publish':
                 publish(command[1], self.repoPath, self.serverIP, self.serverPort, self)
+                _, fname = os.path.split(command[1])
+                if  fname not in self.published_file:
+                    self.published_file.append(fname)
+
+
+            elif command[0] == 'exit':
+                print(f'Client {self.clientName} shut down')
+                return
             else:
                 print("Undefined command")
 
@@ -97,7 +106,7 @@ class Client:
         except Exception as e:
             raise Exception("Failed to init connection to server")
         
-    def __del__(self):
+    def shut_down(self):
         data = {
             'clientName': self.clientName,
             'serverHandlerPort': self.serverHandlerPort,
@@ -118,20 +127,32 @@ class Client:
 
 
 if __name__ == '__main__':
-    serverHandlerPort, clientHandlerPort = [int(port) for port in input("Input port: ").split(' ')]
+    clientName = input("Client started. Please choose a name to display on the system: ")
+
+    ports_input = []
+    while(len(ports_input) != 2 or ports_input == ""):
+        ports_input = input("Input port: ").split(' ')
+        if len(ports_input) != 2 or ports_input == "":
+            print("Please provide two port numbers.")
+        else:
+            serverHandlerPort, clientHandlerPort = [int(port) for port in ports_input]
 
     clientUI = ClientUI()
-    client = Client(serverInfo=('192.168.1.153', 8000),
-                    clientName='VirrosLuo', 
-                    serverHandlerInfo=('192.168.1.153', serverHandlerPort), 
-                    clientHandlerInfo=('192.168.1.153', clientHandlerPort),
+    serverIP = '192.168.1.29'
+    client = Client(serverInfo=(serverIP, 8000),
+                    clientName=clientName, 
+                    serverHandlerInfo=(serverIP, serverHandlerPort), 
+                    clientHandlerInfo=(serverIP, clientHandlerPort),
                     SupplyingFile_number=10,
                     clientUI=clientUI)
     
     serverHandlerThread = threading.Thread(target=client.handle_server)
+    serverHandlerThread.daemon = True
     serverHandlerThread.start()
 
     clientHandlerThread = threading.Thread(target=client.handle_client)
+    clientHandlerThread.daemon = True
     clientHandlerThread.start()
 
     client.handle_UI()
+    client.shut_down()
