@@ -28,6 +28,9 @@ def fetch(serverIP, serverPort, repoPath):
           msg = msg.split(None, 1)
           if msg[0] == "list": # return a list of available file from fetch request. User will choose a file, then client will send the request for info of that file
                chosen_file = ClientUI.display_available_file(msg[1])
+               # 
+               # why do we let the user input in the display available file function?
+               #
                server_socket.sendall(f"{chosen_file}".encode('utf-8'))
           elif msg[0] == "client": # return the info of a client having the chosen file
                fetch_from_client(chosen_file, repoPath, msg[1])
