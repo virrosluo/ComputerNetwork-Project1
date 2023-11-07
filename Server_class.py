@@ -171,7 +171,7 @@ class Server:
 if __name__ == '__main__':
     print("Server started")
     serverUI = ServerUI()
-    server = Server('192.168.1.29', 8000, 10, serverUI)
+    server = Server('192.168.31.76', 8000, 10, serverUI)
 
     clientHandlerThread = threading.Thread(target=server.client_handler)
     clientHandlerThread.daemon = True

@@ -44,8 +44,11 @@ def fetch_from_client(chosen_file, repoPath, data):
      msg = f"{chosen_file}"
      fetch_socket.sendall(msg.encode('utf-8'))
      with open(f'{os.path.join(repoPath, chosen_file)}', 'wb') as file:
-          data = fetch_socket.recv(4096)  # Adjust buffer size as per your requirements
-          file.write(data)
+          data = fetch_socket.recv(4096)
+          while(data):
+               # data = fetch_socket.recv(4096)  # Adjust buffer size as per your requirements
+               file.write(data)
+               data = fetch_socket.recv(4096)
      print(f"Fetch {chosen_file} successfully")
 
      fetch_socket.close()

@@ -138,7 +138,7 @@ if __name__ == '__main__':
             serverHandlerPort, clientHandlerPort = [int(port) for port in ports_input]
 
     clientUI = ClientUI()
-    serverIP = '192.168.1.29'
+    serverIP = '192.168.31.76'
     client = Client(serverInfo=(serverIP, 8000),
                     clientName=clientName, 
                     serverHandlerInfo=(serverIP, serverHandlerPort), 
