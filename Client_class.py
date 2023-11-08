@@ -112,7 +112,7 @@ class Client:
             server_connection.close()
             return True
         except Exception as e:
-            raise Exception("Failed to init connection to server")
+            raise Exception(e)
         
     def shut_down(self):
         data = {
@@ -150,25 +150,26 @@ if __name__ == '__main__':
     # it look kinda clunky but that the only way that i made it cross-platform
     my_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     my_socket.connect(("8.8.8.8", 80))
-    serverIP = my_socket.getsockname()[0]
+    serverIP = '192.168.159.53'
+    clientIP = my_socket.getsockname()[0]
     my_socket.close()
     
     client = Client(serverInfo=(serverIP, 8000),
                     clientName=clientName, 
-                    serverHandlerInfo=(serverIP, 0), 
-                    clientHandlerInfo=(serverIP, 0),
+                    serverHandlerInfo=(clientIP, 0), 
+                    clientHandlerInfo=(clientIP, 0),
                     SupplyingFile_number=10,
                     clientUI=clientUI)
     
     clientHandlerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     clientHandlerSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    clientHandlerSocket.bind((serverIP, 0))
+    clientHandlerSocket.bind((clientIP, 0))
     clientHandlerSocket.listen(client.supplyingFile_number)
     # lấy cái port number
     _, clientHandlerPort = clientHandlerSocket.getsockname()
     serverHandlerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     serverHandlerSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    serverHandlerSocket.bind((serverIP, 0))
+    serverHandlerSocket.bind((clientIP, 0))
     serverHandlerSocket.listen(1)
     # lấy cái port number
     _, serverHandlerPort = serverHandlerSocket.getsockname()
@@ -184,8 +185,8 @@ if __name__ == '__main__':
     clientHandlerThread.start()
     
     # tạo cái connection đến server và gửi các file cần thiết
-    client.serverHandlerIP, client.serverHandlerPort = (serverIP, serverHandlerPort)
-    client.clientHandlerIP, client.clientHandlerPort = (serverIP, clientHandlerPort)
+    client.serverHandlerIP, client.serverHandlerPort = (clientIP, serverHandlerPort)
+    client.clientHandlerIP, client.clientHandlerPort = (clientIP, clientHandlerPort)
     
     client.init_connection()
 
