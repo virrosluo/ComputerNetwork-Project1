@@ -3,10 +3,11 @@ import json
 import threading
 
 from ServerAPI.ServerUI import ServerUI
-from ServerAPI.Discover import *
-from ServerAPI.Ping import *
-from ServerAPI.SendFile import *
-from ServerAPI.Publish import *
+from ServerAPI.Discover import discover
+
+from ServerAPI.Ping import ping
+from ServerAPI.SendFile import handle_fetch
+from ServerAPI.Publish import handle_publish
 
 class Server:
     def __init__(self, 
@@ -170,8 +171,15 @@ class Server:
 
 if __name__ == '__main__':
     print("Server started")
+    # GET server IP address by connecting it to Google DNS and return the address
+    # it look kinda clunky but that the only way that i made it cross-platform
+    my_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    my_socket.connect(("8.8.8.8", 80))
+    serverIP = my_socket.getsockname()[0]
+    my_socket.close()
+    
     serverUI = ServerUI()
-    server = Server('192.168.31.76', 8000, 10, serverUI)
+    server = Server(serverIP, 8000, 10, serverUI)
 
     clientHandlerThread = threading.Thread(target=server.client_handler)
     clientHandlerThread.daemon = True
