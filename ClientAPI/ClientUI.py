@@ -7,11 +7,11 @@ class ClientUI:
         for idx, fname in enumerate(listFile):
             print(f"{idx}: {fname}")
     
-def display_available_file(list_of_file):
-    list_of_file = list_of_file.split()
-    print(f"There are {len(list_of_file)} files: ")
+    def display_available_file(self, list_of_file):
+        list_of_file = list_of_file.split()
+        print(f"There are {len(list_of_file)} files: ")
 
-    for idx, file in enumerate(list_of_file):
-        print(f"{idx+1}. {file}")
-    chosen_idx = int(input(f"Please choose a file by typing the index: "))
-    return list_of_file[chosen_idx - 1]
+        for idx, file in enumerate(list_of_file):
+            print(f"{idx+1}. {file}")
+        chosen_idx = int(input(f"Please choose a file by typing the index: "))
+        return list_of_file[chosen_idx - 1]

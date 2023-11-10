@@ -80,7 +80,7 @@ class Client:
                 self.UI.display_published_file(self.published_file)
 
             elif command[0] == 'fetch':
-                fetch(self.serverIP, self.serverPort, self.repoPath)
+                fetch(self.serverIP, self.serverPort, self.repoPath, self)
 
             elif command[0] == 'publish':
                 publish(command[1], self.repoPath, self.serverIP, self.serverPort, self)
