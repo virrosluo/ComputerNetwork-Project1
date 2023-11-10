@@ -23,7 +23,7 @@ class Client:
         self.clientName = clientName
         self.supplyingFile_number = SupplyingFile_number
 
-        self.ui = clientUI
+        self.UI = clientUI
 
         self.repoPath = 'repository'
         self.published_file = []

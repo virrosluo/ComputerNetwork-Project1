@@ -55,7 +55,3 @@ def fetch_from_client(chosen_file, repoPath, data):
      print(f"Fetch {chosen_file} successfully")
 
      fetch_socket.close()
-
-def discover(server_socket, published_file):
-     msg = json.dumps(published_file)
-     server_socket.sendall(msg.encode('utf-8'))

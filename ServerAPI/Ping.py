@@ -1,7 +1,7 @@
 import socket
 import json
 
-def ping(clientInfo) -> bool:
+def ping(clientInfo: dict) -> bool:
    r'''
     clientInfo: a dictionary format {'Address', 'Name', 'serverHandlerPort', 'ClientHandlerPort'}
 

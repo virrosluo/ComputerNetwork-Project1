@@ -34,6 +34,3 @@ def handle_fetch(client_socket, available_file_list, clientDict, index_list):
      msg = "client " + json_str
      client_socket.sendall(msg.encode('utf-8'))
      # print(f"Send information of client {chosen_client} for {filename} to {client_address}")
-
-def check_file():
-  print("check if the requested file exist")
