@@ -79,9 +79,14 @@ class Server:
         key = (clientInfo['address'], clientInfo['serverHandlerPort'])
         self.clientDict.pop(key)
 
+        remove_fname = []
         for fname, clientList in self.available_file.items():
             self.available_file[fname] = [clientKey for clientKey in clientList if clientKey != key]
-            if self.available_file[fname] == []: self.pop_fnameFromDict(fname)
+            if self.available_file[fname] == []: 
+                remove_fname.append(fname)
+
+        for fname in remove_fname:
+            self.pop_fnameFromDict(fname)
 
     def UI_handler(self):
         while self.Stop_Thread == False:

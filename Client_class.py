@@ -69,7 +69,7 @@ class Client:
             if msg[0] == "discover":
                 discover(serverSocket, self.published_file)
             elif msg[0] == "ping":
-                pass
+                serverSocket.sendall("ping".encode())
 
     def handle_UI(self):
         while True:
@@ -84,7 +84,6 @@ class Client:
                 _, fname = os.path.split(command[1])
                 if  fname not in self.published_file:
                     self.published_file.append(fname)
-
 
             elif command[0] == 'exit':
                 print(f'Client {self.clientName} shut down')
@@ -150,7 +149,7 @@ if __name__ == '__main__':
     # it look kinda clunky but that the only way that i made it cross-platform
     my_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     my_socket.connect(("8.8.8.8", 80))
-    serverIP = '192.168.159.53'
+    serverIP = '10.128.149.253'
     clientIP = my_socket.getsockname()[0]
     my_socket.close()
     
