@@ -3,8 +3,8 @@ import socket
 import json
 import threading
 
-from ClientAPI.FetchFile import fetch, discover
-from ClientAPI.PublishFile import publish
+from ClientAPI.FetchFile import fetch
+from ClientAPI.PublishFile import publish, discover
 from ClientAPI.ClientUI import ClientUI
 from ClientAPI.SendFile import handle_fetch_request
 
@@ -23,7 +23,7 @@ class Client:
         self.clientName = clientName
         self.supplyingFile_number = SupplyingFile_number
 
-        self.ui = clientUI
+        self.UI = clientUI
 
         self.repoPath = 'repository'
         self.published_file = []
@@ -76,8 +76,11 @@ class Client:
             command = input("Input command: ")
             command = command.split(' ')
 
-            if command[0] == 'fetch':
-                fetch(self.serverIP, self.serverPort, self.repoPath)
+            if command[0] == 'display':
+                self.UI.display_published_file(self.published_file)
+
+            elif command[0] == 'fetch':
+                fetch(self.serverIP, self.serverPort, self.repoPath, self)
 
             elif command[0] == 'publish':
                 publish(command[1], self.repoPath, self.serverIP, self.serverPort, self)
@@ -149,7 +152,7 @@ if __name__ == '__main__':
     # it look kinda clunky but that the only way that i made it cross-platform
     my_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     my_socket.connect(("8.8.8.8", 80))
-    serverIP = '10.128.149.253'
+    serverIP = '192.168.1.18'
     clientIP = my_socket.getsockname()[0]
     my_socket.close()
     

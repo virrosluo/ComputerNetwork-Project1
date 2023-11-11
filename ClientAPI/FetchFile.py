@@ -2,10 +2,7 @@ import socket
 import json
 import os
 
-from . import ClientUI
-
-def fetch(serverIP, serverPort, repoPath):
-     # Extract server address
+def fetch(serverIP, serverPort, repoPath, clientInfo):
      try:
           server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
           server_socket.connect((serverIP, serverPort))
@@ -27,7 +24,7 @@ def fetch(serverIP, serverPort, repoPath):
           # Check the type of message from client. 
           msg = msg.split(None, 1)
           if msg[0] == "list": # return a list of available file from fetch request. User will choose a file, then client will send the request for info of that file
-               chosen_file = ClientUI.display_available_file(msg[1])
+               chosen_file = clientInfo.UI.display_available_file(msg[1])
                # 
                # why do we let the user input in the display available file function?
                #
@@ -55,7 +52,3 @@ def fetch_from_client(chosen_file, repoPath, data):
      print(f"Fetch {chosen_file} successfully")
 
      fetch_socket.close()
-
-def discover(server_socket, published_file):
-     msg = json.dumps(published_file)
-     server_socket.sendall(msg.encode('utf-8'))
