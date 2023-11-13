@@ -63,6 +63,9 @@ class Server:
         file_list: list of file name
 
         clientInfo: a dictionary format {'Address', 'Name', 'serverHandlerPort', 'ClientHandlerPort'}
+
+        Use to push the client information into the available file list. Or it will push a new element + client information into 
+        available file list if the available file list does not contain that new file
         '''
         for fname in file_list:
             if fname not in self.available_file.keys():
@@ -122,6 +125,8 @@ class Server:
     def get_client(self):
         r'''
         Let user choose the client and return that client Info to create the connection for next step
+
+        This function will display the client list to the UI and let the Server user to choose a particular client from that list.
         '''
         clientList = [{'address':key[0], 'name':value[0], 'serverHandlerPort':key[1], 'clientHandlerPort':value[1]} 
                       for key, value in self.clientDict.items()]
