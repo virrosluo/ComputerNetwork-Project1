@@ -31,20 +31,9 @@ class Client:
             for fname in os.listdir(self.repoPath):
                 # print(fname)
                 self.published_file.append(fname)
-
-        # phải ngăn cái này tạo connection do để connection sau để có thể 
-        # gửi port của client handler và server handler cho server
-        
-        # self.init_connection()
+        else: os.mkdir(self.repoPath)
 
     def handle_client(self, connectionSocket):
-        # đem mấy cái code này vào main để lấy cái port của socket
-        # print(type(connectionSocket))
-        # connectionSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        # connectionSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        # connectionSocket.bind((self.clientHandlerIP, self.clientHandlerPort))
-        # connectionSocket.listen(self.supplyingFile_number)
-
         # Create new thread to handle a new client fetch request
         while True:
             clientSocket, _ = connectionSocket.accept()
@@ -53,13 +42,6 @@ class Client:
             task.start()
 
     def handle_server(self, connectionSocket):
-        # đem mấy cái code này vào main để lấy cái port của socket
-        # print(type(connectionSocket))
-        # connectionSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        # connectionSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        # connectionSocket.bind((self.serverHandlerIP, self.serverHandlerPort))
-        # connectionSocket.listen(1)
-
         while True:
             serverSocket, _ = connectionSocket.accept()
             
@@ -139,20 +121,11 @@ class Client:
 if __name__ == '__main__':
     clientName = input("Client started. Please choose a name to display on the system: ")
 
-    # ports_input = []
-    # while(len(ports_input) != 2 or ports_input == ""):
-    #     ports_input = input("Input port: ").split(' ')
-    #     if len(ports_input) != 2 or ports_input == "":
-    #         print("Please provide two port numbers.")
-    #     else:
-    #         serverHandlerPort, clientHandlerPort = [int(port) for port in ports_input]
-
     clientUI = ClientUI()
-    # GET server IP address by connecting it to Google DNS and return the address
-    # it look kinda clunky but that the only way that i made it cross-platform
+
     my_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     my_socket.connect(("8.8.8.8", 80))
-    serverIP = '192.168.1.18'
+    serverIP = '192.168.1.10'
     clientIP = my_socket.getsockname()[0]
     my_socket.close()
     
@@ -167,21 +140,21 @@ if __name__ == '__main__':
     clientHandlerSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     clientHandlerSocket.bind((clientIP, 0))
     clientHandlerSocket.listen(client.supplyingFile_number)
-    # lấy cái port number
+    # Take the port number
     _, clientHandlerPort = clientHandlerSocket.getsockname()
     serverHandlerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     serverHandlerSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     serverHandlerSocket.bind((clientIP, 0))
     serverHandlerSocket.listen(1)
-    # lấy cái port number
+    # Take the port number
     _, serverHandlerPort = serverHandlerSocket.getsockname()
     
-    # sever thread
+    # Sever Handler thread
     serverHandlerThread = threading.Thread(target=client.handle_server, args=(serverHandlerSocket,))
     serverHandlerThread.daemon = True
     serverHandlerThread.start()
     
-    # client thread
+    # Client Handler thread
     clientHandlerThread = threading.Thread(target=client.handle_client, args=(clientHandlerSocket,))
     clientHandlerThread.daemon = True
     clientHandlerThread.start()
