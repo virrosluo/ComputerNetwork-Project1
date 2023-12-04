@@ -3,8 +3,9 @@ import socket
 import json
 import threading
 
-from ClientAPI.FetchFile import fetch
-from ClientAPI.PublishFile import publish, discover
+from ClientAPI.FetchFile import fetch_file_owner, fetch_from_client, fetch_from_server
+from ClientAPI.PublishFile import publish
+from ClientAPI.Discover import discover
 from ClientAPI.ClientUI import ClientUI
 from ClientAPI.SendFile import handle_fetch_request
 
@@ -29,7 +30,6 @@ class Client:
         self.published_file = []
         if os.path.exists(self.repoPath):
             for fname in os.listdir(self.repoPath):
-                # print(fname)
                 self.published_file.append(fname)
         else: os.mkdir(self.repoPath)
 
@@ -53,6 +53,8 @@ class Client:
             elif msg[0] == "ping":
                 serverSocket.sendall("ping".encode())
 
+            serverSocket.close()
+
     def handle_UI(self):
         while True:
             command = input("Input command: ")
@@ -62,7 +64,11 @@ class Client:
                 self.UI.display_published_file(self.published_file)
 
             elif command[0] == 'fetch':
-                fetch(self.serverIP, self.serverPort, self.repoPath, self)
+                fileList = fetch_from_server(self.serverIP, self.serverPort)
+                chosen_file = self.UI.display_available_file(fileList)
+                fileOwner = fetch_file_owner(self.serverIP, self.serverPort, chosen_file)
+                if fetch_from_client(chosen_file, self.repoPath, fileOwner):
+                    self.published_file.append(chosen_file)
 
             elif command[0] == 'publish':
                 publish(command[1], self.repoPath, self.serverIP, self.serverPort, self)
@@ -115,8 +121,6 @@ class Client:
             print("Notice deletion to server")
         except Exception as e:
             print("Cannot notice deletion to server")
-
-
 
 if __name__ == '__main__':
     clientName = input("Client started. Please choose a name to display on the system: ")

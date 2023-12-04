@@ -6,7 +6,7 @@ from ServerAPI.ServerUI import ServerUI
 from ServerAPI.Discover import discover
 
 from ServerAPI.Ping import ping
-from ServerAPI.SendFile import handle_fetch
+from ServerAPI.SendFile import handle_fetch_file, handle_fetch_owner
 from ServerAPI.Publish import handle_publish
 
 class Server:
@@ -40,6 +40,7 @@ class Server:
             clientConnection, clientAddress = serverSocket.accept()
             msg = clientConnection.recv(1024).decode('utf-8')
 
+            print(msg)
             msg = msg.split('\n')
 
             if msg[0] == 'init':
@@ -48,8 +49,14 @@ class Server:
             elif msg[0] == 'delete':
                 self.deleteHandler(clientAddress, msg[1])
 
+            elif msg[0] == 'remove':
+                self.removeFileHandler(clientAddress, msg[1])
+
             elif msg[0] == 'fetch':
-                handle_fetch(clientConnection, self.available_file, self.clientDict, self.index_list)
+                handle_fetch_file(clientConnection, self.available_file)
+
+            elif msg[0] == 'owner':
+                handle_fetch_owner(clientConnection, msg[1], self.available_file, self.clientDict, self.index_list)
 
             elif msg[0] == 'publish':
                 fname, key = handle_publish(clientAddress, msg[1])
@@ -160,6 +167,23 @@ class Server:
                 if self.available_file[fname] == []:
                     self.pop_fnameFromDict(fname)
 
+    def removeFileHandler(self, clientAddress, data):
+        r"""
+            Use to remove a specific file out of available_file list following the client Request
+        """
+
+        json_data = dict(json.loads(data))
+
+        key = (clientAddress[0], json_data['serverHandlerPort'])
+        fname = json_data['fileName']
+
+        if fname not in self.available_file.keys():
+            print("Has file not in available_file list when remove file")
+        else:
+            self.available_file[fname] = [i for i in self.available_file[fname] if i != key]
+            if self.available_file[fname] == []:
+                self.pop_fnameFromDict(fname)
+
     def pop_fnameFromDict(self, fname):
         r'''
         Use to remove a fname out of self.available_file and self.index_list
@@ -189,7 +213,7 @@ if __name__ == '__main__':
     my_socket.close()
     
     serverUI = ServerUI()
-    server = Server(serverIP, 8000, 10, serverUI)
+    server = Server(serverIP, 8001, 10, serverUI)
 
     clientHandlerThread = threading.Thread(target=server.client_handler)
     clientHandlerThread.daemon = True
