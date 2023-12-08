@@ -12,6 +12,8 @@ from ClientAPI.DeleteFile import remove
 
 from constant import *
 
+import time
+
 
 app = FastAPI()
 
@@ -117,3 +119,31 @@ def Shutdown():
 
     os.kill(os.getpid(), signal.SIGTERM)
     return Response(status_code=200, content='Client shutting down...')
+
+def calculate_average(data):
+    total_time = sum(data)
+    average_time = total_time / len(data)
+    return average_time
+
+def calculate_standard_deviation(data, average_time):
+    squared_diff = sum((time - average_time) ** 2 for time in data)
+    variance = squared_diff / len(data)
+    standard_deviation = variance ** 0.5
+    return standard_deviation
+
+@app.get("/perform/{file_name}/{target_address}/{target_port}/{times}")
+def performance_test(file_name: str, target_address:str, target_port:int, times:int):
+    target_info = {'address': target_address, 'port': target_port}
+
+    time_list = []
+    for i in range(times):
+        start = time.time()
+        download_result = fetch_from_client(file_name, client.repoPath, target_info)
+        end = time.time()
+        if download_result == True:
+            time_list.append(end - start)
+
+    average_time = calculate_average(time_list)
+    sd_time = calculate_standard_deviation(time_list, average_time)
+
+    return {"average": average_time, "sd": sd_time}
