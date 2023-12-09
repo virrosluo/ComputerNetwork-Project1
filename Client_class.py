@@ -6,8 +6,11 @@ import threading
 from ClientAPI.FetchFile import fetch_file_owner, fetch_from_client, fetch_from_server
 from ClientAPI.PublishFile import publish
 from ClientAPI.Discover import discover
+from ClientAPI.DeleteFile import remove
 from ClientAPI.ClientUI import ClientUI
 from ClientAPI.SendFile import handle_fetch_request
+
+from constant import *
 
 class Client:
     def __init__(self, 
@@ -70,11 +73,15 @@ class Client:
                 if fetch_from_client(chosen_file, self.repoPath, fileOwner):
                     self.published_file.append(chosen_file)
 
+            elif command[0] == 'delete':
+                    remove_result = remove(command[1], client.repoPath, client.serverIP, client.serverPort, client)
+                    if remove_result == True: client.published_file.remove(command[1])
+
             elif command[0] == 'publish':
-                publish(command[1], self.repoPath, self.serverIP, self.serverPort, self)
-                _, fname = os.path.split(command[1])
-                if  fname not in self.published_file:
-                    self.published_file.append(fname)
+                # command: publish filePath newFileName
+                publish(command[1], self.repoPath, command[2], self.serverIP, self.serverPort, self)
+                if  command[2] not in self.published_file:
+                    self.published_file.append(command[2])
 
             elif command[0] == 'exit':
                 print(f'Client {self.clientName} shut down')
@@ -129,11 +136,10 @@ if __name__ == '__main__':
 
     my_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     my_socket.connect(("8.8.8.8", 80))
-    serverIP = '192.168.1.10'
     clientIP = my_socket.getsockname()[0]
     my_socket.close()
     
-    client = Client(serverInfo=(serverIP, 8000),
+    client = Client(serverInfo=(SERVER_IP, SERVER_PORT),
                     clientName=clientName, 
                     serverHandlerInfo=(clientIP, 0), 
                     clientHandlerInfo=(clientIP, 0),

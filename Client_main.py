@@ -96,12 +96,13 @@ def download_file(chosen_file:str, target_address:str, target_port:int):
     if download_result == True: return {"download_status": "success"}
     else: return {"download_status": "failure"}
 
-@app.post("/publish/{filename}/{filepath}")
-def publish_file(filename:str, filepath:str):
-    print(filename, filepath)
-    publish_result = publish(os.path.join(filepath, filename), client.repoPath, client.serverIP, client.serverPort, client)
+@app.post("/publish/{filepath}/{new_fileName}")
+def publish_file(filepath:str, new_fileName:str):
+    publish_result = publish(filepath, client.repoPath, new_fileName, client.serverIP, client.serverPort, client)
 
-    if publish_result == True: return {"publish_status": "success"}
+    if publish_result == True: 
+        client.published_file.append(new_fileName)
+        return {"publish_status": "success"}
     else: return {"publish_status": "failure"}
 
 @app.post("/delete/{filename}")

@@ -9,6 +9,8 @@ from ServerAPI.Ping import ping
 from ServerAPI.SendFile import handle_fetch_file, handle_fetch_owner
 from ServerAPI.Publish import handle_publish
 
+from constant import *
+
 class Server:
     def __init__(self, 
                  IP_address, 
