@@ -4,6 +4,9 @@ import shutil
 import json
 
 def push_to_repo(filePath:str, repoPath:str, newFileName: str) -> bool:
+    """
+        Copy file from filePath to repoPath
+    """
     if os.path.exists(repoPath) == False: os.mkdir(repoPath)
 
     try:

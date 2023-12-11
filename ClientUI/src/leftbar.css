@@ -1,0 +1,11 @@
+.left-bar{
+  border: 1px solid;
+  height: 100%;
+}
+
+.dropdown-button{
+  width: 100%;
+  font-size: 1px;
+  display: flex;
+  justify-content: "space-between";
+}

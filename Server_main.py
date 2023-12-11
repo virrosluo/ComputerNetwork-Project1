@@ -1,14 +1,14 @@
 from fastapi import FastAPI, Response
 import os
 import signal
-
+import asyncio
 import socket
 import threading
 
 from ServerAPI.ServerUI import ServerUI
 from ServerAPI.Discover import discover
 from ServerAPI.Ping import ping
-
+from fastapi.middleware.cors import CORSMiddleware
 from Server_class import Server
 from constant import *
 
@@ -17,7 +17,14 @@ app = FastAPI()
 # uvicorn.run(app, port=8000, reload=True)
 
 server = None
-
+origins = ["*"]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 @app.get("/start")
 def start_server():
     print("Call start server")
@@ -82,7 +89,15 @@ def ping_client(address:str, name:str, serverHandlerPort:int, clientHandlerPort:
 
     return {"client_status": result}
 
-@app.post("/exit")
-def Shutdown():
+async def shutdown():
+    print("Shutting down server...")
     os.kill(os.getpid(), signal.SIGTERM)
+
+@app.post("/exit")
+async def shutdown_endpoint():
+    asyncio.create_task(shutdown())
     return Response(status_code=200, content='Server shutting down...')
+
+@app.post("/test")
+async def test(hello:str):
+    return {"test": "test"}

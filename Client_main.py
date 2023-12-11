@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Response
+from fastapi import FastAPI, Response, Request
 import os
 import socket
 import signal
@@ -13,12 +13,18 @@ from ClientAPI.DeleteFile import remove
 from constant import *
 
 import time
-
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
-
+origins = ["*"]
 client = None
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 @app.post("/start/{name}")
 def start_client(name: str):
 
@@ -96,7 +102,7 @@ def download_file(chosen_file:str, target_address:str, target_port:int):
     if download_result == True: return {"download_status": "success"}
     else: return {"download_status": "failure"}
 
-@app.post("/publish/{filepath}/{new_fileName}")
+@app.post("/publish")
 def publish_file(filepath:str, new_fileName:str):
     publish_result = publish(filepath, client.repoPath, new_fileName, client.serverIP, client.serverPort, client)
 
@@ -148,3 +154,9 @@ def performance_test(file_name: str, target_address:str, target_port:int, times:
     sd_time = calculate_standard_deviation(time_list, average_time)
 
     return {"average": average_time, "sd": sd_time}
+
+@app.post('test')
+async def test():
+    # data = await request.json()
+    # return {data}
+    return {"test": "test"}
