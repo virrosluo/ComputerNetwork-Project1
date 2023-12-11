@@ -35,6 +35,16 @@ On mac
 python3 -m uvicorn Client_main:app --port 9001
 ```
 
+### 5. Run the Server and Client Frontend
+```bash
+cd ClientUI
+npm run dev
+cd ../
+cd ServerUI
+npm run dev
+cd ../
+```
+
 ### Some Requirement for the app to run properly
 - The Server_main and Client_main must be run before you can start the actuall client and server
 - The server must be start before the client
