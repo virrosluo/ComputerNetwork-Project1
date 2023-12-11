@@ -20,8 +20,22 @@ pip install -r requirements.txt
 ```bash
 uvicorn Server_main:app --port 8001
 ```
+On mac
+```bash
+python3 -m uvicorn Server_main:app --port 8001
+```
 
 ### 4. Run the Client Backend with port 9000
 ```bash
-uvicorn Server_main:app --port 9000
+uvicorn Client_main:app --port 9001
 ```
+
+On mac
+```bash
+python3 -m uvicorn Client_main:app --port 9001
+```
+
+### Some Requirement for the app to run properly
+- The Server_main and Client_main must be run before you can start the actuall client and server
+- The server must be start before the client
+- Remember to change the constant server IP
