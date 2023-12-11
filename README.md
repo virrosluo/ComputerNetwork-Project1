@@ -39,3 +39,5 @@ python3 -m uvicorn Client_main:app --port 9001
 - The Server_main and Client_main must be run before you can start the actuall client and server
 - The server must be start before the client
 - Remember to change the constant server IP
+- The FileDirectory are atcually the full file directory: "C:\Users\levie\Downloads\logo.png"
+- The New file name is the new file name you want to save as: NewFetchlogo.png
