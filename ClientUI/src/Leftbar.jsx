@@ -129,8 +129,10 @@ const Leftbar = () => {
           })}
         </List>
       </Collapse>
-      {/* <Button variant='contained' sx={{m: 2}} > Refresh </Button> */}
       </Paper>
+      <Box sx={{ml: 'auto', width: `100%`}}>
+      <Button variant='contained' sx={{m: 2}} onClick={handleRefreshPublishedFile}> Refresh </Button>
+      </Box>
       <form onSubmit={handlePublishFile}>
       <TextField
         id="outlined-basic"

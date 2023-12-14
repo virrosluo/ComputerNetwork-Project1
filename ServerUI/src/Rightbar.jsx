@@ -132,7 +132,7 @@ const Rightbar = () => {
   }
 
   async function handleStartServer() {
-    addSnackBar({ message: "Server started", variant: "success" })
+    // addSnackBar({ message: "Server started", variant: "success" })
     fetch(` http://127.0.0.1:${SERVER_API_PORT}/start`, {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
