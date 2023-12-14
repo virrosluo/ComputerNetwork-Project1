@@ -56,7 +56,6 @@ def fetch_from_server(serverIP, serverPort):
     except Exception as e:
         print("Cannot connect to server")
 
-    
 def fetch_file_owner(serverIP, serverPort, fileName):
     r"""
         Fetch Client that holding the specific "fileName" for the requesting client
