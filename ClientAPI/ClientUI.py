@@ -8,7 +8,6 @@ class ClientUI:
             print(f"{idx}: {fname}")
     
     def display_available_file(self, list_of_file):
-        list_of_file = list_of_file.split()
         print(f"There are {len(list_of_file)} files: ")
 
         for idx, file in enumerate(list_of_file):

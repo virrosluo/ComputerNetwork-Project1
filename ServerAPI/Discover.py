@@ -16,7 +16,6 @@ def discover(clientInfo: dict) -> list[str]:
         jsonStr = connection.recv(1024).decode()
 
         fileList = json.loads(jsonStr)
-        print(fileList)
         return fileList
     except Exception as e:
         print("Error at discover in Server: ", e)
